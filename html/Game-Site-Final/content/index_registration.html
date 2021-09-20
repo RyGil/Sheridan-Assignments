@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Registration Form</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--
+Author: 		  Ryan Gilchrist
+File name: 		index_registration.html
+Date Created:	Summer 2021
+Date Updated: Summer 2021
+Version: 		  1.0
+Purpose: 		  learning Javascript programming & PHP(SYST10199)
+Copyright: 
+    This work is the intellectual property of Sheridan College. 
+    Any further copying and distribution outside of class must be within 
+    the copyright law. Posting to commercial sites for profit is prohibited.
+References:
+    [Code from Ellen Bajcar's Github: https://github.com/ebajcar/web10199_worksheets/tree/master/syst10199/projects/home2021]
+    [Referenced onkeyup Events from : https://www.w3schools.com/jsref/event_onkeyup.asp]
+    [Referenced location.replace() from: https://www.w3schools.com/jsref/met_loc_replace.asp]
+    [Referenced event.preventDefault() from: https://www.w3schools.com/jsref/event_preventdefault.asp]
+    [Referenced new RegExp(...) from: https://www.codegrepper.com/code-examples/javascript/javascript+password+validation]
+    [Referenced password visibility toggle from: https://www.w3schools.com/howto/howto_js_toggle_password.asp]
+    [Referenced password validation from: https://www.w3schools.com/howto/howto_js_password_validation.asp]
+    [Referenced registration form creation from: https://www.w3schools.com/howto/howto_css_register_form.asp]
+    [Referenced assignment video from: https://share.vidyard.com/watch/JdKT1F5LihyVNJRJhQQvW9?]
+
+Description:
+    Registration page presented to users when they choose to register.
+    See README.txt file (when it becomes available)
+-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        /*
+        *Minor styling to make page more appealing
+        */
+        * {
+            box-sizing: border-box
+        }
+
+        .formContainer {
+            margin-bottom: 60px;
+            width: 120%;
+            height: 95%;
+            background-color: white;
+        }
+
+        label {
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .fields:not(p) {
+            text-align: left;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .checkbox {
+            text-align: left;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        #valid {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 10px;
+        }
+
+        p {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 20px;
+        }
+
+        #title {
+            margin-top: 15px;
+            padding-top: 30px;
+        }
+
+        .btn-long {
+            width: 40%;
+            height: 8%;
+            cursor: pointer;
+        }
+
+        #cancel {
+            background-color: #04AA6D;
+        }
+
+        input[type=text],
+        input[type=password],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 5px 0;
+            display: inline-block;
+            border: none;
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Become A Member</h1>
+    </header>
+    <nav>
+        <a href="index_public.html">Back</a>
+    </nav>
+    <main>
+        <form method="post" action="register.php">
+            <div class="formContainer">
+                <!--Registration form fields-->
+                <p id="title">Please fill in this form to create an account.</p>
+                <div class="fields">
+                    <label for="firstName"><b>First Name</b></label><br>
+                    <input type="text" placeholder="Enter First Name" name="firstName" id="firstName" required><br>
+
+                    <label for="lastName"><b>Last Name</b></label><br>
+                    <input type="text" placeholder="Enter Last Name" name="lastName" id="lastName" required><br>
+
+                    <label for="phone"><b>Phone</b></label><br>
+                    <input type="text" placeholder="Enter Phone Number" name="phone" id="phone" required><br>
+
+                    <label for="username"><b>Username</b></label><br>
+                    <input type="text" placeholder="Enter Username" name="userName"><br>
+
+                    <label for="password"><b>Password</b></label>
+                    <p id="valid"></p>
+                    <input type="checkbox" class="showPass" id="showPass">
+                    <label for="checkbox" class="showPass">Show password</label>
+                    <input type="password" placeholder="Enter Password" name="userPassword" id="password"><br>
+
+                    <label for="passwordRepeat"><b>Repeat Password</b></label><br>
+                    <input type="password" placeholder="Repeat Password" name="passwordRepeat" id="passwordRepeat"><br>
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" value="rememberMe" id="rememberMe">
+                    <label for="checkbox">Remember me</label>
+                </div>
+                <!--Terms and Privacy link + Cancel and Register buttons-->
+                <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
+                <tr>
+                    <td>
+                        <input type="submit" value="Cancel" class="btn-long" id="cancel">
+                    </td>
+                    <td>
+                        <input type="submit" value="Register" class="btn-long" id="register">
+                    </td>
+                </tr>
+            </div>
+        </form>
+    </main>
+    <footer>
+        <address>SYST10199 Web Programming &copy; Sheridan College</address>
+    </footer>
+
+    <!--Javascript-->
+    <script>
+
+        var firstName = document.getElementById("firstName");
+        var lastName = document.getElementById("lastName");
+        var phoneNumber = document.getElementById("phone");
+        var country = document.getElementById("country");
+        var userPass = document.getElementById("password");
+        var compare = document.getElementById("passwordRepeat");
+        var cancel = document.getElementById("cancel");
+        var register = document.getElementById("register");
+        var showPass = document.getElementById("showPass");
+        var valid = document.getElementById("valid");
+
+        // First name requirements
+        firstName.onkeyup = function () {
+            let requirements = new RegExp('(?=.*[a-z])(?=.{3,})');
+            if (firstName.value.match(requirements)) {
+                firstName.style.background = "#f1f1f1";
+            } else {
+                firstName.style.background = "red";
+            }
+        }
+        // Last name requirements
+        lastName.onkeyup = function () {
+            let requirements = new RegExp('(?=.*[a-z])(?=.{3,})');
+            if (lastName.value.match(requirements)) {
+                lastName.style.background = "#f1f1f1";
+            } else {
+                lastName.style.background = "red";
+            }
+        }
+        // Phone Number requirements
+        phoneNumber.onkeyup = function () {
+            let requirements = new RegExp('(?=.*[0-9])(?=.{10,})');
+            if (phoneNumber.value.match(requirements)) {
+                phoneNumber.style.background = "#f1f1f1";
+            } else {
+                phoneNumber.style.background = "red";
+            }
+        }
+
+        // Password field requirements
+        userPass.onkeyup = function () {
+            let strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,})');
+            if (!userPass.value.match(strongPassword)) {
+                valid.innerHTML = "Password Strength: Weak";
+                valid.style.color = "red";
+            } else {
+                valid.innerHTML = "Password Strength: Strong";
+                valid.style.color = "green";
+            }
+        }
+        // Password compare
+        compare.onkeyup = function () {
+            if (!compare.value.match(userPass.value)) {
+                compare.style.background = "red";
+            } else {
+                compare.style.background = "green";
+            }
+        }
+        // Button function to return to home
+        cancel.onclick = function cancel() {
+            event.preventDefault();
+            location.href = "index_public.html";
+        }
+        // Show password function
+        showPass.onclick = function showPassword() {
+            if (password.type === "password") {
+                password.type = "text";
+            } else {
+                password.type = "password";
+            }
+        }
+    </script>
+</body>
+
+</html>
