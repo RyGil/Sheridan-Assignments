@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Tic Tac Toe</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--
+Author: 		  Ryan Gilchrist
+File name: 		game_ttt.html
+Date Created:	Summer 2021
+Date Updated: Summer 2021
+Version: 		  1.0
+Purpose: 		  learning Javascript programming (SYST10199)
+Copyright: 
+    This work is the intellectual property of Sheridan College. 
+    Any further copying and distribution outside of class must be within 
+    the copyright law. Posting to commercial sites for profit is prohibited.
+References:
+    [Code and images from Ellen Bajcar's Github: https://github.com/ebajcar/web10199_worksheets/tree/master/syst10199/projects/home2021]
+    [Class 3 notes: https://ebajcar.github.io/web10199/slides_by_reveal/index_w3.html#/7]
+    [Starting code from: https://github.com/ebajcar/web10199_worksheets/blob/master/syst10199/projects/ttt_v2012_obt.html]
+Description:
+    Tic Tac Toe game page presented to members when they 
+    select the game from the home page.
+-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /*
+    *Minor styling for game page
+    */
+    main {
+      min-height: 400px;
+    }
+    table {
+      margin: auto;
+    }
+    td {
+      width: 70px;
+      height: 70px;
+      border: 1px solid black;
+      font-size: 40px;
+      text-align: center;
+      font-family: arial, helvetica, sans-serif;
+    }
+    #cell_0, #cell_3, #cell_6 {
+      border-left-style: none;
+      cursor: pointer;
+    }
+    #cell_2, #cell_5, #cell_8 {
+      border-right-style: none;
+      cursor: pointer;
+    }
+    #cell_0, #cell_1, #cell_2 {
+      border-top-style: none;
+      cursor: pointer;
+    }
+    #cell_6, #cell_7, #cell_8 {
+      border-bottom-style: none;
+      cursor: pointer;
+    }
+    #cell_4 {
+      cursor: pointer;
+    }
+    #resetGame {
+      background-color: white;
+      visibility: hidden;
+      margin-top: 50px;
+      margin-bottom: 100px;
+    }
+    #message {
+      margin-bottom: 15%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!--Displays game title-->
+    <h1>Game of<br> Tic Tac Toe</h1>
+  </header>
+  <nav>
+    <!--Navigation to home page-->
+    <a href="index_members.html">Home</a>
+  </nav>
+  <main>
+    <div class="grid-container">
+      <div class="grid-item">
+        <!--button to reset game board-->
+        <button type="button" id="resetGame">Reset Board</button>
+        <!--Table to design game board as a 3x3 grid-->
+        <table>
+          <tr>
+            <td id="cell_0"></td>
+            <td id="cell_1"></td>
+            <td id="cell_2"></td>
+          </tr>
+          <tr>
+            <td id="cell_3"></td>
+            <td id="cell_4"></td>
+            <td id="cell_5"></td>
+          </tr>
+          <tr>
+            <td id="cell_6"></td>
+            <td id="cell_7"></td>
+            <td id="cell_8"></td>
+          </tr>
+        </table>
+        <div id="gameResult">
+          <!--Message to display current turn and winner-->
+          <p id="message"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <address>SYST10199 Web Programming &copy; Sheridan College</address>
+  </footer>
+  <!--Javascript-->
+  <script>
+    var gameOver = false;
+    var player = "X";
+    var emptyCells = 9;
+
+    //Function to start game
+    function gameStart() {
+      let gameBoard = document.getElementsByTagName("td");
+      //Sets message to current player's turn
+      document.getElementById("message").innerHTML = "Player turn: " + player;
+      //Loop to add event listeners to each board element
+      for (let i = 0; i < gameBoard.length; i++) {
+        gameBoard[i].addEventListener("click", function () {
+          //Verifies selected space is blank and that the game is active
+          if (gameBoard[i].innerHTML == "" && gameOver != true) {
+            //Adds current player's symbol to selected space
+            gameBoard[i].innerHTML = player;
+            emptyCells--;
+            //Checks whether there is a win
+            checkWin();
+            //Changes current player
+            changePlayer();
+        }
+      });
+    }
+  }
+
+    //Function to reset game
+    function resetGame() {
+      let gameBoard = document.getElementsByTagName("td");
+      document.getElementById("resetGame").onclick = function () {
+        document.getElementById("resetGame").style.visibility = "hidden";
+        gameOver = false;
+        player = "X";
+        document.getElementById("message").innerHTML = "Player turn: " + player;
+        emptyCells = 9;
+        for (let i = 0; i < gameBoard.length; i++) {
+          gameBoard[i].innerText = "";
+      }
+    }
+  }
+
+    //function to change the player after each move
+    function changePlayer() {
+      player = player == "X" ? "O" : "X";
+      if (gameOver != true) {
+        document.getElementById("message").innerHTML = "Player turn: " + player;
+      }
+    }
+
+    //If statements to check whether any of the winning combonations exist
+    function checkWin() {
+      let gameBoard = document.getElementsByTagName("td");
+      for (let i = 0; i < gameBoard.length; i++) {
+        if (gameBoard[0].innerText == gameBoard[1].innerText && gameBoard[1].innerText == gameBoard[2].innerText && gameBoard[0].innerText != "") {
+          endGame();
+          return;
+        }
+        if (gameBoard[3].innerText == gameBoard[4].innerText && gameBoard[4].innerText == gameBoard[5].innerText && gameBoard[3].innerText != "") {
+          endGame();
+          return;
+        }
+        if (gameBoard[6].innerText == gameBoard[7].innerText && gameBoard[7].innerText == gameBoard[8].innerText && gameBoard[6].innerText != "") {
+          endGame();
+          return;
+        }
+        if (gameBoard[0].innerText == gameBoard[3].innerText && gameBoard[3].innerText == gameBoard[6].innerText && gameBoard[0].innerText != "") {
+          endGame();
+          return;
+        }
+        if (gameBoard[1].innerText == gameBoard[4].innerText && gameBoard[4].innerText == gameBoard[7].innerText && gameBoard[1].innerText != "") {
+          endGame();
+          return;
+        }
+        if (gameBoard[2].innerText == gameBoard[5].innerText && gameBoard[5].innerText == gameBoard[8].innerText && gameBoard[2].innerText != "") {
+          endGame();
+          return;
+        }
+        if (gameBoard[0].innerText == gameBoard[4].innerText && gameBoard[4].innerText == gameBoard[8].innerText && gameBoard[0].innerText != "") {
+          endGame();
+          return;
+        }
+        if (gameBoard[2].innerText == gameBoard[4].innerText && gameBoard[4].innerText == gameBoard[6].innerText && gameBoard[2].innerText != "") {
+          endGame();
+          return;
+        }
+        if (emptyCells == 0) {
+          draw();
+          return;
+        }
+      }
+    }
+
+    //Function that ends the game, makes the reset button visible, and displays winning message
+    function endGame() {
+      gameOver = true
+      document.getElementById("resetGame").style.visibility = "visible";
+      document.getElementById("message").innerHTML = "Player " + player + " wins!";
+    }
+
+    //Function that ends the game, makes the reset button visible, and displays draw message
+    function draw() {
+      gameOver = true;
+      document.getElementById("resetGame").style.visibility = "visible";
+      document.getElementById("message").innerHTML = "It's a DRAW!";
+    }
+
+    gameStart();
+    resetGame();
+  </script>
+</body>
+</html>
