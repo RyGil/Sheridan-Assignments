@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Rock Paper Scissors Lizard Spock Game</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--
+Author: 		  Ryan Gilchrist
+File name: 		game_rpsls.html
+Date Created:	Summer 2021
+Date Updated: Summer 2021
+Version: 		  1.0
+Purpose: 		  learning Javascript programming (SYST10199)
+Copyright: 
+    This work is the intellectual property of Sheridan College. 
+    Any further copying and distribution outside of class must be within 
+    the copyright law. Posting to commercial sites for profit is prohibited.
+References:
+    [Code and images from Ellen Bajcar's Github: https://github.com/ebajcar/web10199_worksheets/tree/master/syst10199/projects/home2021]
+    [Referenced arrays from: https://ebajcar.github.io/web10199/material/material_js.html]
+    [Referenced DOM methods and properties from: https://ebajcar.github.io/web10199/material/material_js.html]
+Description:
+    Rock Paper Scissors Lizard Spock game page presented to members when they 
+    select the game from the home page.
+-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /*
+    * Background Images
+    */
+    #rock {
+      background-image: url("../images/rock1.png");
+    }
+    #paper {
+      background-image: url("../images/paper1.png");
+    }
+    #scissors {
+      background-image: url("../images/scissors1.png");
+    }
+    #lizard {
+      background-image: url("../images/lizard1.png");
+    }
+    #spock {
+      background-image: url("../images/spock1.png");
+    }
+    /*
+    * Minor styling
+    */
+    #results {
+      display: none;
+    }
+    #restart, #game-stats {
+      background-color: white;
+    }
+    div button:active, div button:hover {
+      cursor: pointer;
+    }
+    #score {
+      display: none;
+      font-size: 25px;
+      font-weight: bold;
+      margin: 16px 0 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!--Displays game title-->
+    <h1>Game of<br>Rock Paper Scissors Lizard Spock</h1>
+  </header>
+  <nav>
+    <!--Navigation to home page-->
+    <a href="index_members.html">Home</a>
+  </nav>
+  <main>
+    <div class="grid-container">
+      <div class="grid-item">
+        <div id="game">
+          <!--Welcome message-->
+          <p><br>Welcome!</p>
+          <p><br><br></p>
+          <!--Message to instruct player to choose move-->
+          <p><br><br>Your move... Click on an image to choose!</p>
+          <!--Options for player to choose from-->
+          <a id="rock" class="but tooltip"><span class="tooltiptext">ROCK</span></a>
+          <a id="paper" class="but tooltip"><span class="tooltiptext">PAPER</span></a>
+          <a id="scissors" class="but tooltip"><span class="tooltiptext">SCISSORS</span></a>
+          <a id="lizard" class="but tooltip"><span class="tooltiptext">LIZARD</span></a>
+          <a id="spock" class="but tooltip"><span class="tooltiptext">SPOCK</span></a>
+          <p><br></p>
+        </div>
+      </div>
+      <div id="results">
+        <!--Buttons to play again or see current stats-->
+        <button type="button" id="game-stats">Stats</button>
+        <button type="button" id="restart">Play Again!</button>
+        <!--Results Div - Displays player & comp selections (image and text)-->
+        <div id="display-results">
+          <p id="computerText"></p>
+          <img src="" alt="" id="computerChoice">
+          <p id="userText">: </p>
+          <img src="" alt="" id="userChoice">
+          <p id="resultText"></p>
+        </div>
+      </div>
+      <!--Scoreboard - Displayed when user clicks Stats button-->
+      <div id="score">
+        <p>YOU - <span id="user-score"> 0 </span> : <span id="comp-score"> 0 </span> - Computer</p>
+      </div>
+    </div>
+    </div>
+  </main>
+  <footer>
+    <address>SYST10199 Web Programming &copy; Sheridan College</address>
+  </footer>
+  <!--Javascript-->
+  <script>
+    //Global variables
+    const rock = document.getElementById("rock");
+    const paper = document.getElementById("paper");
+    const scissors = document.getElementById("scissors");
+    const lizard = document.getElementById("lizard");
+    const spock = document.getElementById("spock");
+    const restart = document.getElementById("restart");
+    const stats = document.getElementById("game-stats");
+    let userScore = 0;
+    let compScore = 0;
+    const displayUserScore = document.getElementById("user-score");
+    const displayCompScore = document.getElementById("comp-score");
+
+    //Function to run the welcome message in console
+    function beginGameText() {
+      console.log("Welcome to Rock Paper Scissos Lizard Spock!");
+      console.log("Your move... Click on an image to choose!");
+    }
+
+    //Function to assign a random selection to the computer
+    function computerSelection() {
+      const choices = ["rock", "paper", "scissors", "lizard", "spock"];
+      const randomSelection = Math.floor(Math.random() * 5);
+      return choices[randomSelection];
+    }
+
+    //Functions that increment the score, edits the resutText, and displays the results page
+    function userWin() {
+      console.log("YOU WIN!");
+      userScore++;
+      displayUserScore.innerHTML = userScore;
+      displayCompScore.innerHTML = compScore;
+      document.getElementById("resultText").innerHTML = "<b>YOU WIN!</b>";
+      document.getElementById("game").style.display = 'none';
+      document.getElementById("results").style.display = 'block';
+    }
+
+    function userLose() {
+      console.log("MACHINE WINS!");
+      compScore++;
+      displayCompScore.innerHTML = compScore;
+      displayUserScore.innerHTML = userScore;
+      document.getElementById("resultText").innerHTML = "<b>MACHINE WINS!</b>";
+      document.getElementById("game").style.display = 'none';
+      document.getElementById("results").style.display = 'block';
+    }
+
+    //Function that edits the resultText, and displays the results page for a draw
+    function userTie() {
+      console.log("IT'S A DRAW!");
+      document.getElementById("resultText").innerHTML = "<b>IT'S A DRAW!</b>";
+      document.getElementById("game").style.display = 'none';
+      document.getElementById("results").style.display = 'block';
+    }
+
+    //Function to run game
+    function game(userChoice) {
+      const computerChoice = computerSelection();
+      console.log("Computer chose: " + computerChoice);
+      console.log("You chose: " + userChoice);
+      //Switch Statement to replace user elements in #results div based on user's choice
+      switch (userChoice) {
+        case "rock":
+          document.getElementById("userText").innerHTML = "You chose: Rock";
+          document.getElementById("userChoice").src = "../images/rock1.png";
+          break;
+        case "paper":
+          document.getElementById("userText").innerHTML = "You chose: Paper";
+          document.getElementById("userChoice").src = "../images/paper1.png";
+          break;
+        case "scissors":
+          document.getElementById("userText").innerHTML = "You chose: Scissors";
+          document.getElementById("userChoice").src = "../images/scissors1.png";
+          break;
+        case "lizard":
+          document.getElementById("userText").innerHTML = "You chose: Lizard";
+          document.getElementById("userChoice").src = "../images/lizard1.png";
+          break;
+        case "spock":
+          document.getElementById("userText").innerHTML = "You chose: Spock";
+          document.getElementById("userChoice").src = "../images/spock1.png";
+          break;
+      }
+
+      //Switch Statement to replace computer elements in #results div based on computer's choice
+      switch (computerChoice) {
+        case "rock":
+          document.getElementById("computerText").innerHTML = "Computer chose: Rock";
+          document.getElementById("computerChoice").src = "../images/rock1.png";
+          break;
+        case "paper":
+          document.getElementById("computerText").innerHTML = "Computer chose: Paper";
+          document.getElementById("computerChoice").src = "../images/paper1.png";
+          break;
+        case "scissors":
+          document.getElementById("computerText").innerHTML = "Computer chose: Scissors";
+          document.getElementById("computerChoice").src = "../images/scissors1.png";
+          break;
+        case "lizard":
+          document.getElementById("computerText").innerHTML = "Computer chose: Lizard";
+          document.getElementById("computerChoice").src = "../images/lizard1.png";
+          break;
+        case "spock":
+          document.getElementById("computerText").innerHTML = "Computer chose: Spock";
+          document.getElementById("computerChoice").src = "../images/spock1.png";
+          break;
+      }
+
+      //Switch Statement to determine the result of the game
+      switch (userChoice + " " + computerChoice) {
+        case "rock scissors":
+        case "rock lizard":
+        case "paper rock":
+        case "paper spock":
+        case "scissors paper":
+        case "scissors lizard":
+        case "lizard spock":
+        case "lizard paper":
+        case "spock scissors":
+        case "spock rock":
+          userWin();
+          break;
+        case "scissors rock":
+        case "lizard rock":
+        case "rock paper":
+        case "spock paper":
+        case "paper scissors":
+        case "lizard scissors":
+        case "spock lizard":
+        case "paper lizard":
+        case "scissors spock":
+        case "rock spock":
+          userLose();
+          break;
+        case "rock rock":
+        case "paper paper":
+        case "scissors scissors":
+        case "lizard lizard":
+        case "spock spock":
+          userTie();
+          break;
+      }
+    }
+
+    //Function to determine user's choice based on what is clicked
+    function userChoice() {
+      rock.addEventListener('click', function () {
+        game("rock");
+      })
+      paper.addEventListener('click', function () {
+        game("paper");
+      })
+      scissors.addEventListener('click', function () {
+        game("scissors");
+      })
+      lizard.addEventListener('click', function () {
+        game("lizard");
+      })
+      spock.addEventListener('click', function () {
+        game("spock");
+      })
+    }
+
+    //Function to show the running scoreboard when user presses #stats button
+    stats.onclick = function displayScore() {
+      document.getElementById("display-results").style.display = 'none';
+      document.getElementById("game-stats").style.visibility = 'hidden';
+      document.getElementById("game").style.display = 'none';
+      document.getElementById("score").style.display = 'block';
+    }
+
+    //Function to restart the game when user presses #restart button
+    restart.onclick = function restartGame() {
+      document.getElementById("results").style.display = 'none';
+      document.getElementById("score").style.display = 'none';
+      document.getElementById("game").style.display = 'block';
+      document.getElementById("display-results").style.display = 'block';
+      document.getElementById("game-stats").style.visibility = 'visible';
+      beginGameText();
+    }
+
+    beginGameText();
+    userChoice();
+  </script>
+</body>
+</html>

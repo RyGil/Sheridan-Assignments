@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Casino Craps</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--
+Author: 		  Ryan Gilchrist
+File name: 		game_rpsls.html
+Date Created:	Summer 2021
+Date Updated: Summer 2021
+Version: 		  1.0
+Purpose: 		  learning Javascript programming (SYST10199)
+Copyright: 
+    This work is the intellectual property of Sheridan College. 
+    Any further copying and distribution outside of class must be within 
+    the copyright law. Posting to commercial sites for profit is prohibited.
+References:
+    [CSS code and images from Ellen Bajcar's Github: https://github.com/ebajcar/web10199_worksheets/tree/master/syst10199/projects/home2021]
+    [Die images from: https://www.geeksforgeeks.org/building-a-dice-game-using-javascript/]
+    [Reference to class 4 notes: https://ebajcar.github.io/web10199/slides_by_reveal/index_w4.html#/14]
+    [Initial code for Craps: https://gist.github.com/ebajcar/528556cd7ea32185cbd9f2d23d8caa24]
+    [Casino Craps class video: https://ebajcar.github.io/web10199/slides_by_reveal/index_w4.html#/15]
+
+Description:
+    Casino Craps game page presented to members when they 
+    select the game from the home page.
+-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    /*
+    * Minor styling for game page
+    */
+    body {
+      margin: 0 auto;
+      text-align: center;
+    }
+    main {
+      min-height: 540px;
+    }
+    table {
+      margin: 0 auto;
+      background-color: transparent;
+      table-layout: fixed;
+      width: 650px;
+      text-align: center;
+    }
+    td {
+      background-color: transparent;
+      text-align: center;
+    }
+    main p {
+      margin: 0;
+      font-size: 30px;
+    }
+    div.container {
+      display: inline-block;
+    }
+    #die1 {
+      width: 100px;
+      height: 100px;
+    }
+    #die2 {
+      width: 100px;
+      height: 100px;
+    }
+    #total {
+      font-size: 60px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <!--Displays game title-->
+    <h1>Play Casino Craps!</h1>
+  </header>
+  <nav>
+    <!--Navigation to home page-->
+    <a href="index_members.html">Home</a>
+  </nav>
+  <main>
+    <table>
+      <tr>
+        <td colspan="2">
+          <!--Container to place dice images side-by-side-->
+          <div class="container"> 
+            <img id="die1" src="../images/dice_1.png">
+          </div>
+          <div class="container">
+            <img id="die2" src="../images/dice_1.png">
+          </div>
+        </td>
+        <td>
+          <!--Text to display user's current roll-->
+          <p>You rolled&hellip;</p><br />
+          <p id="total">&nbsp;</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <!--Text to display scoreboard-->
+          <p>STATS</p>
+          <p>Wins: <span id="wins">0</span></p>
+          <p>Losses: <span id="losses">0</span></p>
+        </td>
+        <td colspan="2">
+          <!--Text to tell user to start game, and the win/lose/point text of each roll-->
+          <p id="show" class="show">To start a game, roll the dice!</p>
+        </td>
+      </tr>
+      <tr>
+        <!--Button that clears the scoreboard and all edited text-->
+        <td><button id="clear" class="btn-long">Clear</button></td>
+        <td colspan="2">
+          <!--Button for rolling the dice-->
+          <button id="roll" class="btn-long">Roll the dice!</button>
+        </td>
+      </tr>
+    </table>
+  </main>
+  </main>
+  <footer>
+    <address>SYST10199 Web Programming &copy; Sheridan College</address>
+  </footer>
+  <script>
+    //Function to start the game
+    function playGame() {
+      document.getElementById("roll").onclick = function () {
+        rollDice(1, 6);
+      }
+    }
+    //Function to reset the game
+    function newGame() {
+      document.getElementById("clear").onclick = function () {
+        userWins = 0;
+        document.getElementById("wins").innerText = userWins;
+        userLosses = 0;
+        document.getElementById("losses").innerText = userLosses;
+        document.getElementById("show").innerHTML = "To start a game, roll the dice!";
+        document.getElementById("total").innerHTML = "";
+      }
+    }
+    //Function for first roll - randomizes dice, and checks whether player wins/loses
+    function rollDice(min, max) {
+      let firstRoll = 0;
+      let nextRoll = 0;
+      let die1 = Math.floor(Math.random() * (max - min + 1)) + min;
+      console.log("Die #1: " + die1);
+      let die2 = Math.floor(Math.random() * (max - min + 1)) + min;
+      console.log("Die #2: " + die2);
+      firstRoll += die1 + die2;
+      console.log("Roll total: " + firstRoll);
+      document.getElementById("total").innerHTML = firstRoll;
+
+      //calls function to change dice images to reflect randomized numbers
+      dieChange(die1, die2);
+
+      if (firstRoll == 7 || firstRoll == 11) {
+        userWin(firstRoll);
+      } else if (firstRoll == 2 || firstRoll == 3 || firstRoll == 12) {
+        userLose(firstRoll, nextRoll);
+      } else {
+        document.getElementById("show").innerText = "Your point is " + firstRoll;
+        document.getElementById("roll").onclick = function () {
+          pointRoll(firstRoll);
+        }
+      }
+    }
+    //Function for all point rolls - runs until user wins/loses
+    function pointRoll(firstRoll) {
+      var min = 1;
+      var max = 6;
+      var nextRoll = 0;
+      var die1 = Math.floor(Math.random() * (max - min + 1)) + min;
+      console.log("Die #1: " + die1);
+      var die2 = Math.floor(Math.random() * (max - min + 1)) + min;
+      console.log("Die #2: " + die2);
+      nextRoll += die1 + die2;
+      console.log("Point roll total: " + nextRoll);
+      document.getElementById("total").innerHTML = nextRoll;
+
+      //calls function to change dice images to reflect randomized numbers
+      dieChange(die1, die2);
+
+      if (nextRoll == firstRoll) {
+        userWin(firstRoll);
+      } else if (nextRoll == 7) {
+        userLose(firstRoll, nextRoll);
+      } else {
+        document.getElementById("roll").onclick = function () {
+          pointRoll(firstRoll);
+        }
+      }
+    }
+
+    //Function to display winning results and increment scoreboard
+    let userWins = 0;
+    function userWin(firstRoll) {
+      userWins++;
+      document.getElementById("wins").innerText = userWins;
+      if (firstRoll == 7 || firstRoll == 11) {
+        document.getElementById("show").innerHTML = "That's a <b>natural</b>. You win!<br> To start a game, roll the dice!";
+        console.log("That's a natural. You win!");
+      } else {
+        document.getElementById("show").innerHTML = "You made your point. You win!<br> To start a game, roll the dice!";
+        console.log("You made your point. You win!");
+      }
+      playGame();
+    }
+
+    //Function to display losing results and increment scoreboard
+    let userLosses = 0;
+    function userLose(firstRoll, nextRoll) {
+      userLosses++;
+      document.getElementById("losses").innerText = userLosses;
+      if (nextRoll == 7) {
+        document.getElementById("show").innerHTML = "That's a seven. You lose!<br> To start a game, roll the dice!";
+        console.log("That's a seven. You lose!");
+      } else {
+        document.getElementById("show").innerHTML = "That's <b>craps</b>. You lose!<br> To start a game, roll the dice!";
+        console.log("That's craps. You lose!");
+      }
+      playGame();
+    }
+
+    //Function that changes dice images based on randomized roll
+    function dieChange(die1, die2) {
+      switch (die1) {
+        case 1:
+          document.getElementById("die1").src = "../images/dice_1.png";
+          break;
+        case 2:
+          document.getElementById("die1").src = "../images/dice_2.png";
+          break;
+        case 3:
+          document.getElementById("die1").src = "../images/dice_3.png";
+          break;
+        case 4:
+          document.getElementById("die1").src = "../images/dice_4.png";
+          break;
+        case 5:
+          document.getElementById("die1").src = "../images/dice_5.png";
+          break;
+        case 6:
+          document.getElementById("die1").src = "../images/dice_6.png";
+          break;
+      }
+      switch (die2) {
+        case 1:
+          document.getElementById("die2").src = "../images/dice_1.png";
+          break;
+        case 2:
+          document.getElementById("die2").src = "../images/dice_2.png";
+          break;
+        case 3:
+          document.getElementById("die2").src = "../images/dice_3.png";
+          break;
+        case 4:
+          document.getElementById("die2").src = "../images/dice_4.png";
+          break;
+        case 5:
+          document.getElementById("die2").src = "../images/dice_5.png";
+          break;
+        case 6:
+          document.getElementById("die2").src = "../images/dice_6.png";
+          break;
+      }
+    }
+
+    playGame();
+    newGame();
+
+  </script>
+</body>
+
+</html>
