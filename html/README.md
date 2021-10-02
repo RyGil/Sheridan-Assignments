@@ -1,9 +1,11 @@
 ## Overview
 Course: Web Development
+
 Projects created: Summer 2021
+
 Institution: Sheridan College
 
-The goal of these projects was to teach us mostly Javascript programming. PHP was taught in the last two weeks of class, and assignments 6 & 8 were completed in the last week of class.
+The goal of these projects was to teach us mostly Javascript programming. PHP and SQL were taught in the last two weeks of class, and assignments 6 & 8 were completed in the last week of class.
 
 ## Projects
 Game-Site-and-3-Games: 
